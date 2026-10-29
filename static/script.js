@@ -265,13 +265,25 @@ function appendMessage(msg) {
         contentHtml += `<div>${msg.text}</div>`;
     }
 
+    // Even if the receiver is online, it shows a single tick instead of a double tick."
+    let tickHtml = '';
+    if (isMe) {
+        const isRecipientOnline = typeof onlineUsersList !== 'undefined' && onlineUsersList.includes(activeRecipient);
+        if (isRecipientOnline) {
+            tickHtml = '<i class="fa-solid fa-check-double ticks"></i>'; // ऑनलाइन होने पर डबल टिक
+        } else {
+            tickHtml = '<i class="fa-solid fa-check" style="color: #8696a0;"></i>'; // ऑफलाइन होने पर सिंगल ग्रे टिक
+        }
+    }
+
     div.innerHTML = `
         ${contentHtml}
         <div class="msg-footer">
             <span class="timestamp">${msg.time}</span>
-            ${isMe ? '<i class="fa-solid fa-check-double ticks"></i>' : ''}
+            ${tickHtml}
         </div>
     `;
+
     box.appendChild(div);
     box.scrollTop = box.scrollHeight;
 }
