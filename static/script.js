@@ -265,14 +265,19 @@ function appendMessage(msg) {
         contentHtml += `<div>${msg.text}</div>`;
     }
 
-    // Even if the receiver is online, it shows a single tick instead of a double tick."
     let tickHtml = '';
     if (isMe) {
-        const isRecipientOnline = typeof onlineUsersList !== 'undefined' && onlineUsersList.includes(activeRecipient);
-        if (isRecipientOnline) {
-            tickHtml = '<i class="fa-solid fa-check-double ticks"></i>'; // ऑनलाइन होने पर डबल टिक
+        // Agar database se pehle se koi status aa raha hai
+        if (msg.status === 'read' || msg.is_read) {
+            tickHtml = '<i class="fa-solid fa-check-double ticks"></i>';
         } else {
-            tickHtml = '<i class="fa-solid fa-check" style="color: #8696a0;"></i>'; // ऑफलाइन होने पर सिंगल ग्रे टिक
+            const isRecipientOnline = typeof onlineUsersList !== 'undefined' && onlineUsersList.includes(activeRecipient);
+            // Agar recipient online hai toh double blue tick, warna single grey tick
+            if (isRecipientOnline) {
+                tickHtml = '<i class="fa-solid fa-check-double ticks"></i>';
+            } else {
+                tickHtml = '<i class="fa-solid fa-check" style="color: #8696a0;"></i>';
+            }
         }
     }
 
@@ -331,4 +336,4 @@ function logout() {
     document.getElementById("authContainer").style.display = "flex";
     document.getElementById("authUsername").value = "";
     document.getElementById("authPassword").value = "";
-}
+        }
