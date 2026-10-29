@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WhatsApp Web</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+</head>
+<body>
+
+    <!-- AUTH SCREEN -->
+    <div id="authContainer" class="auth-wrapper">
+        <div class="auth-bg-decor"></div>
+        <div class="auth-card">
+            <div class="auth-logo">
+                <i class="fa-brands fa-whatsapp"></i>
+            </div>
+            <h2 id="authTitle">Chat App</h2>
+            <p class="auth-sub" id="authSub">Sign in to start messaging</p>
+
+            <div class="input-group">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" id="authUsername" placeholder="Enter Username" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="authPassword" placeholder="Enter Password">
+            </div>
+
+            <button id="authBtn" onclick="handleAuth()">Login</button>
+            
+            <p id="authSwitch">Don't have an account? <a href="javascript:void(0)" onclick="toggleAuthMode()">Sign up</a></p>
+            <div id="authError"></div>
+        </div>
+    </div>
+
+    <!-- MAIN CHAT APP -->
+    <div id="chatApp" class="chat-container" style="display: none;">
+        
+        <!-- SIDEBAR -->
+        <div class="sidebar" id="sidebarSection">
+            <div class="sidebar-header">
+                <div class="user-profile-badge">
+                    <div class="avatar" id="myAvatarLetter">U</div>
+                    <div class="profile-meta">
+                        <span id="myUsernameDisplay">User</span>
+                        <small class="self-tag">Online</small>
+                    </div>
+                </div>
+                <button onclick="logout()" class="logout-btn" title="Logout">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </button>
+            </div>
+
+            <!-- SEARCH BAR -->
+            <div class="search-box-container">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="userSearchInput" placeholder="Search contact..." oninput="filterUsers()">
+                </div>
+            </div>
+
+            <div class="chat-list-header">All Contacts</div>
+            <div id="usersList" class="users-list"></div>
+        </div>
+
+        <!-- CHAT AREA -->
+        <div class="chat-area" id="chatAreaSection">
+            <div class="chat-header">
+                <button class="back-btn" id="mobileBackBtn" onclick="backToUserList()">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div class="chat-header-avatar" id="activeChatAvatar" style="display:none;">U</div>
+                <div class="chat-header-info">
+                    <span id="chatWithTitle">Select a user to chat</span>
+                    <small id="chatStatusSubtitle" class="status-subtitle"></small>
+                </div>
+            </div>
+
+            <div id="messagesContainer" class="messages-container">
+                <div class="no-chat-selected">
+                    <i class="fa-solid fa-comments chat-placeholder-icon"></i>
+                    <h3>Chat App</h3>
+                    <p>Select any contact to send real-time personal messages and photos.</p>
+                </div>
+            </div>
+
+            <!-- CHAT INPUT BAR -->
+            <div class="chat-input-bar" id="chatInputArea" style="display: none;">
+                <!-- Emoji Button -->
+                <button class="action-icon-btn" onclick="toggleEmojiPicker()" title="Emoji">
+                    <i class="fa-regular fa-face-smile"></i>
+                </button>
+                
+                <div id="emojiPicker" class="emoji-picker-box" style="display: none;">
+                    <span onclick="insertEmoji('😀')">😀</span>
+                    <span onclick="insertEmoji('😂')">😂</span>
+                    <span onclick="insertEmoji('😍')">😍</span>
+                    <span onclick="insertEmoji('❤️')">❤️</span>
+                    <span onclick="insertEmoji('🔥')">🔥</span>
+                    <span onclick="insertEmoji('👍')">👍</span>
+                    <span onclick="insertEmoji('🎉')">🎉</span>
+                    <span onclick="insertEmoji('😎')">😎</span>
+                </div>
+
+                <!-- Attachment / Image Upload -->
+                <label class="action-icon-btn" title="Send Image">
+                    <i class="fa-solid fa-paperclip"></i>
+                    <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                </label>
+
+                <input type="text" id="msgInput" placeholder="Type a message..." oninput="handleTypingInput()" onkeypress="checkEnter(event)">
+                <button onclick="sendMsg()" class="send-btn" title="Send Message">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Incoming Message Audio Beep -->
+    <audio id="msgSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+        
